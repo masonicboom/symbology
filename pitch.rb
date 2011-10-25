@@ -109,10 +109,25 @@ class Pitch
     @midi_number == other.midi_number
   end
   
+  def enharmonic_name
+    name = OFFSET_NAMES[offset][@accidental_bias] || scientific_name
+    en = (OFFSET_NAMES[offset].values - [name]).first
+    "#{en[0]}#{octave}#{en[1]}"
+  end
+  
 end
 
 MIDDLE_C = Pitch.new(60)
 A440 = Pitch.new(69)
+
+
+class MajorScale
+
+  def initialize(root)
+    
+  end
+
+end
 
 
 def scale(steps)
@@ -149,6 +164,10 @@ class PitchTester < Test::Unit::TestCase
   
   def test_initialize_with_flat_works
     assert_equal Pitch.new('A4#'), Pitch.new('B4b')
+  end
+  
+  def test_enharmonic_name
+    assert_equal Pitch.new('A4#').enharmonic_name, 'B4b'
   end
   
 end
