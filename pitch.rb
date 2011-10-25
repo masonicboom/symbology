@@ -43,7 +43,9 @@ class Pitch
   
   attr_reader :midi_number
   
-  def initialize(notation)
+  def initialize(notation, accidental_bias=nil)
+    @accidental_bias = accidental_bias # should be either :sharp or :flat
+    
     if notation.class == Fixnum or notation.class == Float
       initialize_from_midi_number(notation)
     elsif notation.class == String
@@ -66,11 +68,15 @@ class Pitch
   end
   
   def octave
-    (@midi_number-21)/12
+    (@midi_number-21) / 12
+  end
+  
+  def offset
+    (@midi_number-21) % 12
   end
   
   def scientific_name
-    SCIENTIFIC_NOTE_NAMES[(@midi_number-21) % 12]
+    SCIENTIFIC_NOTE_NAMES[offset]
   end
   
   def scientific_notation
@@ -79,7 +85,8 @@ class Pitch
   end
   
   def to_s
-    scientific_notation
+    name = OFFSET_NAMES[offset][@accidental_bias] || scientific_name
+    "#{name[0]}#{octave}#{name[1]}"
   end
   
   def +(semitones)
@@ -123,9 +130,6 @@ chromatic_scale.call(Pitch.new('C3')).each {|root| p major_scale.call(root)}
 
 class PitchTester < Test::Unit::TestCase
   
-  def setup
-  end
-
   def test_initialize_by_midi_number_works
     Pitch.new(60)
   end
