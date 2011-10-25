@@ -121,6 +121,10 @@ class Pitch
     "#{en[0]}#{octave}#{en[1]}"
   end
   
+  def major_scale
+    MajorScale.new(self)
+  end
+  
 end
 
 MIDDLE_C = Pitch.new(60)
@@ -130,6 +134,7 @@ A440 = Pitch.new(69)
 class MajorScale
 
   STEPS = [2, 2, 1, 2, 2, 2, 1]
+  LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
   def initialize(root)
     prev = root
@@ -141,11 +146,12 @@ class MajorScale
   end
   
   def to_s
+    # TODO: make this more elegant.
     prev = root.to_s
     [root] + @pitches[1..-1].map do |pitch|
       prev_letter = prev[0]
       cur_letter = pitch.to_s[0]
-      if cur_letter != prev_letter.succ
+      if cur_letter != LETTERS[(LETTERS.find_index(prev_letter) + 1) % LETTERS.length]
         prev = pitch.enharmonic_name
       else
         prev = pitch.to_s
@@ -157,7 +163,7 @@ class MajorScale
 
 end
 
-p MajorScale.new(Pitch.new('E3b'))
+p Pitch.new('C3').major_scale
 
 #chromatic_scale = scale([0] + [0.5]*12)
 #chromatic_scale.call(Pitch.new('C3')).each {|root| p major_scale.call(root)}
