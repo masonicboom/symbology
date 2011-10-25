@@ -82,17 +82,20 @@ class Pitch
     scientific_notation
   end
   
-  def offset(whole_steps)
-    midi_offset = whole_steps * 2
-    Pitch.new(@midi_number + midi_offset)
+  def +(semitones)
+    Pitch.new(@midi_number + semitones)
+  end
+  
+  def -(semitones)
+    Pitch.new(@midi_number - semitones)
   end
   
   def flat
-    offset(-0.5)
+    self - 1
   end
   
   def sharp
-    offset(0.5)
+    self + 1
   end
   
   def ==(other)
@@ -108,7 +111,7 @@ A440 = Pitch.new(69)
 def scale(steps)
   lambda do |root|
     prev = root
-    steps.map { |whole_steps| prev = prev.offset(whole_steps) }
+    steps.map { |whole_steps| prev = prev + whole_steps*2 }
   end
 end
 
