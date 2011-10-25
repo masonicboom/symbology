@@ -65,6 +65,12 @@ class Pitch
     
     name = "#{match[:name]}#{match[:accidental]}"
     @midi_number = 21 + match[:octave].to_i*12 + NOTE_OFFSETS[name]
+    
+    if match[:accidental] == '#'
+      @accidental_bias = :sharp
+    elsif match[:accidental] == 'b'
+      @accidental_bias = :flat
+    end
   end
   
   def octave
@@ -123,24 +129,38 @@ A440 = Pitch.new(69)
 
 class MajorScale
 
+  STEPS = [2, 2, 1, 2, 2, 2, 1]
+
   def initialize(root)
-    
-  end
-
-end
-
-
-def scale(steps)
-  lambda do |root|
     prev = root
-    steps.map { |whole_steps| prev = prev + whole_steps*2 }
+    @pitches = [root] + STEPS.map { |semitones| prev = prev + semitones }
   end
+  
+  def root
+    @pitches[0]
+  end
+  
+  def to_s
+    prev = root.to_s
+    [root] + @pitches[1..-1].map do |pitch|
+      prev_letter = prev[0]
+      cur_letter = pitch.to_s[0]
+      if cur_letter != prev_letter.succ
+        prev = pitch.enharmonic_name
+      else
+        prev = pitch.to_s
+      end
+      
+      prev
+    end
+  end
+
 end
 
-major_scale = scale([0, 1, 1, 0.5, 1, 1, 1, 0.5])
-chromatic_scale = scale([0] + [0.5]*12)
+p MajorScale.new(Pitch.new('E3b'))
 
-chromatic_scale.call(Pitch.new('C3')).each {|root| p major_scale.call(root)}
+#chromatic_scale = scale([0] + [0.5]*12)
+#chromatic_scale.call(Pitch.new('C3')).each {|root| p major_scale.call(root)}
 
 
 class PitchTester < Test::Unit::TestCase
