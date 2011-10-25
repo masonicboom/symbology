@@ -23,7 +23,21 @@ class Pitch
     'Gb' => 9,
     'G' => 10,
     'G#' => 11,
-    'Ab' => 11
+    'Ab' => 11,
+  }
+  OFFSET_NAMES = {
+    0 => { :natural => 'A' },
+    1 => { :sharp => 'A#', :flat => 'Bb' },
+    2 => { :natural => 'B', :flat => 'Cb' },
+    3 => { :natural => 'C' },
+    4 => { :sharp => 'C#', :flat => 'Db' },
+    5 => { :natural => 'D' },
+    6 => { :sharp => 'D#', :flat => 'Eb' },
+    7 => { :natural => 'E', :flat => 'Fb' },
+    8 => { :natural => 'F', :sharp => 'E#' },
+    9 => { :sharp => 'F#', :flat => 'Gb' },
+    10 => { :natural => 'G' },
+    11 => { :sharp => 'G#', :flat => 'Ab' },
   }
   SCIENTIFIC_NOTE_NAMES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E',  'F', 'F#', 'G', 'G#']
   
